@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import flask
-from flask import request, redirect, flash, render_template, url_for
+from sqlalchemy.exc import SQLAlchemyError
+from flask import current_app, request, redirect, flash, render_template, url_for
 from application.extensions import db
 from application.models import Todo
 
@@ -14,7 +15,6 @@ todo_bp = flask.Blueprint(
 
 @todo_bp.route('/', methods=['GET', 'POST'])
 def index():
-    todo = Todo.query.order_by('-id')
     _form = request.form
 
     if request.method == 'POST':
@@ -24,11 +24,12 @@ def index():
             td.store_to_db()
             flash("add task successfully!")
             return redirect(url_for('todo.index'))
-        except Exception as e:
-            print e
+        except SQLAlchemyError:
+            db.session.rollback()
+            current_app.logger.exception("Could not add task")
             flash("fail to add task!")
 
-    return render_template('index.html', todo=todo)
+    return render_template('index.html', todo=Todo.query.order_by(Todo.id.desc()).all())
 
 
 @todo_bp.route('/<int:todo_id>/del')
@@ -80,5 +81,5 @@ def redo(todo_id):
 
 
 @todo_bp.errorhandler(404)
-def page_not_found():
+def page_not_found(error):
     return render_template('404.html'), 404

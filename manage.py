@@ -1,17 +1,23 @@
-# -*- coding: utf-8 -*-
+import os
 
-from application import create_app
-from application.extensions import db
-from flask_script import Manager, Server
-from flask_migrate import Migrate, MigrateCommand
+import click
+from flask.cli import FlaskGroup
+from flask_migrate import Migrate
 
-app = create_app('default')
+from application import create_app, db
 
-manager = Manager(app)
+app = create_app("production")
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or os.urandom(32)
 migrate = Migrate(app, db)
+cli = FlaskGroup(create_app=lambda: app)
 
-manager.add_command('runserver', Server(host='127.0.0.1', port=7345))
-manager.add_command('db', MigrateCommand)
 
-if __name__ == '__main__':
-    manager.run()
+@cli.command()
+@click.option("--host", default="127.0.0.1")
+@click.option("--port", default=7345, type=int)
+def runserver(host, port):
+    app.run(host=host, port=port)
+
+
+if __name__ == "__main__":
+    cli()

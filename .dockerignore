@@ -1,0 +1,14 @@
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.git/
+.gitignore
+.venv/
+venv/
+.env
+.env.*
+.idea/
+.DS_Store
+todo.sqlite-journal
+todo.sqlite-shm
+todo.sqlite-wal

@@ -6,7 +6,7 @@
     <ol>
     {% for t in todo %}
     {% if t.status==False %}
-        <li>{{ t.title|safe }} <a href="{{ url_for('todo.del_todo', todo_id=t.id) }}" >delete</a> |
+        <li>{{ t.title }} <a href="{{ url_for('todo.del_todo', todo_id=t.id) }}" >delete</a> |
             <a href="{{ url_for('todo.edit', todo_id=t.id) }}" >update </a> |
             <a href="{{ url_for('todo.done', todo_id=t.id) }}" >complete</a>
         </li>
@@ -23,7 +23,7 @@
     {% for t in todo %}
     {% if t.status==True %}
         <li>
-            <del>{{ t.title|safe }}</del>
+            <del>{{ t.title }}</del>
             <a href="{{ url_for('todo.del_todo', todo_id=t.id) }}" >delete</a> |
             <a href="{{ url_for('todo.redo', todo_id=t.id) }}" >redo</a>
         </li>

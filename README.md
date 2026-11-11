@@ -1,40 +1,20 @@
-[前往中文文档](README_zh.md)
+# Практическая работа № 2 — Flask в Docker
 
-# flask-todo-app
+Проект основан на [aixiamomo/flask-todo-app](https://github.com/aixiamomo/flask-todo-app).
+Исходные страницы и база todo.sqlite сохранены, код запуска адаптирован под Python 3.
 
-> Simple web todo application based on flask.
+Открой терминал в этой папке и выполни:
 
-![flask-todo](http://i.imgur.com/aXIeP9K.png)
+    docker build -t flask-todo-app:v1 .
+    docker images
+    docker run -d -p 7345:7345 --name my-todo-container flask-todo-app:v1
+    docker ps --filter name=my-todo-container
 
-## Dependencies
+Открой http://localhost:7345. Добавь задачу, обнови страницу и проверь, что она осталась.
+Журнал запуска: docker logs my-todo-container.
+Остановка: docker stop my-todo-container.
 
-- alembic
-- Babel
-- Flask
-- Jinja2
-- Flask-Babel
-- Flask-SQLAlchemy
-- Flask-Script
-- Flask-Migrate
+Клонирование репозитория:
 
-## Installation
-
-```
-$ git clone https://github.com/ethan-funny/flask-todo-app
-$ cd flask-todo-app
-$ mkvirtualenv flask-todo
-$ pip install -r requirements.txt
-```
-
-## How to run
-
-```
-$ cd flask-todo-app
-$ python manage.py runserver
- * Running on http://127.0.0.1:7345/ (Press CTRL+C to quit)
-```
-
-Then open url http://127.0.0.1:7345 in Chrome.
-
-
-
+    git clone https://github.com/ZERNOHKA/flask-todo-app.git
+    cd flask-todo-app
