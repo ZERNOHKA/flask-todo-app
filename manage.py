@@ -3,6 +3,7 @@ import os
 import click
 from flask.cli import FlaskGroup
 from flask_migrate import Migrate
+from werkzeug.serving import run_simple
 
 from application import create_app, db
 
@@ -16,7 +17,7 @@ cli = FlaskGroup(create_app=lambda: app)
 @click.option("--host", default="127.0.0.1")
 @click.option("--port", default=7345, type=int)
 def runserver(host, port):
-    app.run(host=host, port=port)
+    run_simple(host, port, app, threaded=True)
 
 
 if __name__ == "__main__":
