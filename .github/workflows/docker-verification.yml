@@ -11,11 +11,17 @@ jobs:
         run: |
           docker build -t flask-todo-app:v1 .
           docker run -d -p 127.0.0.1:7345:7345 --name todo flask-todo-app:v1
-          curl --fail --retry 15 --retry-connrefused --retry-delay 1 http://localhost:7345/ -o /dev/null
+          curl --fail --silent --show-error --retry 15 --retry-all-errors --retry-delay 1 --max-time 3 http://127.0.0.1:7345/ -o /dev/null
       - name: Add a task and verify it after reload
         run: |
           curl --fail -sS --data-urlencode 'title=Practice Docker check' http://localhost:7345/ -o /dev/null
           curl --fail -sS http://localhost:7345/ | grep -F 'Practice Docker check'
+      - name: Capture the application
+        run: |
+          google-chrome --headless --no-sandbox --disable-dev-shm-usage --window-size=1100,750 --screenshot="$RUNNER_TEMP/flask-todo.png" http://127.0.0.1:7345/
+          echo '::group::Screenshot data'
+          base64 -w 1000 "$RUNNER_TEMP/flask-todo.png" | sed 's/^/SCREENSHOT /'
+          echo '::endgroup::'
       - name: Show container logs on failure
         if: failure()
         run: docker logs todo || true
