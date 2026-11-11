@@ -1,0 +1,21 @@
+name: Docker verification
+
+on: [push, workflow_dispatch]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and start the container
+        run: |
+          docker build -t flask-todo-app:v1 .
+          docker run -d -p 127.0.0.1:7345:7345 --name todo flask-todo-app:v1
+          curl --fail --retry 15 --retry-connrefused --retry-delay 1 http://localhost:7345/ -o /dev/null
+      - name: Add a task and verify it after reload
+        run: |
+          curl --fail -sS --data-urlencode 'title=Practice Docker check' http://localhost:7345/ -o /dev/null
+          curl --fail -sS http://localhost:7345/ | grep -F 'Practice Docker check'
+      - name: Show container logs on failure
+        if: failure()
+        run: docker logs todo || true
